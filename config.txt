@@ -1,0 +1,66 @@
+##Initial controls
+
+#The time step for the simulation, in seconds. Higher value means faster processing but less accuracy.
+#Common values may be 1 minute (60), 1 hour (3600), or 1 day (86400)
+timeStep=3600
+
+#How long the simulation will simulate, again in seconds.
+#Common values will likely start at 1 year (3.154e7) and multiples thereof. By default, Pluto is the planet with the longest orbit, at ~248 years.
+simulationLength=3.154e7
+
+##Planetary Data
+#New planets can be added and removed, but must follow the format below. Lines can be commented out via # 
+#But expect exceptions and issues if you don't follow the format properly.
+#NB: Since every planet affects every other planet in the system, processing time increases nonlinearly with each new planet added.
+#All measurements are in SI units
+
+name=The Sun
+mass=1.989e30
+position=(0,0,0)
+velocity=(1.998619875971241, 1.177175852520643e1,-6.135600299763972e-2)
+
+name=Mercury
+mass=3.3011e23
+position=(1.275387239870491e10,-6.680195324480709e10,-6.616376210554786e09)
+velocity=(3.815800795678611e04,1.123692837720359e04,-2.583452372780768e03)
+
+name=Venus
+mass=4.867e24
+position=(-8.073224723501202e10,7.027586666429530e10,5.627818208653621e09)
+velocity=(-2.299827401900994e04,-2.669115882767952e04,9.610940692989782e02)
+
+name=Earth
+mass=5.972e24
+position=(4.788721549926552e10,1.398390053760727e11,-2.917617879798263e07)
+velocity=(-2.869322295421606e04,9.472398427890313e03,-1.294094780725619)
+
+
+name=Mars
+mass=6.4171e23
+position=(-2.360304784158461e11,7.782743203688863e10,7.409494561464485e09)
+velocity=(-6.646816636079097e03,-2.094094408471671e04,-2.759397656641038e02)
+
+name=Jupiter
+mass=1.89813e27
+position=(-7.635337060440624e11,2.666352191711917e11, 1.596697237644111e10)
+velocity=(-4.459151830811911e03,-1.171879602036105e04,1.485480013373461e02)
+
+name=Saturn
+mass=5.68319e26
+position=(-5.754602000703751e11,-1.380800977297312e12,4.691113811667019e10)
+velocity=(8.388118620089763e03,-3.745812490969359e03,-2.682504240279582e02)
+
+name=Uranus
+mass=86.8103e24
+position=(2.828705362370189e12, 9.657796340541244e11,-3.305961929341555e10)
+velocity=(-2.249907923122420e03,6.127203368970902e03,5.166083013695255e01)
+
+name=Neptune
+mass=102.41e24
+position=(4.177286553745139e12,-1.624410031732890e12,-6.281810904534376e10)
+velocity=(1.934495516018552e03,5.098519902111810e03,-1.496666233625485e02)
+
+name=Pluto
+mass=1.308e22
+position=(1.263871593868758e12,-4.769395770475431e12,1.447666788459496e11)
+velocity=( 5.347856858111191e03,2.674281760600502e02,-1.564505494419083e03 )
