@@ -16,6 +16,9 @@
 
 //To prevent confusion between a vector, the mathematical object of a number with direction, and std::vector, we use this alias.
 using planetArray_t = std::vector<Planet>;
+//To save having to dig through the utilities library namespaces we use an alias for our vector
+using vector3D_t = Physics::PhysicsVector<3>;
+
 
 //This function adds the default solar system to the simulation. Planetary data courtesy of NASA JPL.
 //This function is only called if after reading the input file, the simulation contains no planets.
@@ -37,7 +40,7 @@ void importDefaultData(planetArray_t& inPlanets) {
 
 //This method calculates the position of the center of mass of the system. This is given by Sum(mass_n * position_n)/Sum(mass_n). 
 //Since we're dealing with vectors, we need to do this on a per-component basis.
-PhysicsVector<3> centreOfMass(const planetArray_t& Planets) {
+vector3D_t centreOfMass(const planetArray_t& Planets) {
 	double comX{ 0 };
 	double comY{ 0 };
 	double comZ{ 0 };
@@ -48,7 +51,7 @@ PhysicsVector<3> centreOfMass(const planetArray_t& Planets) {
 		comZ += planet.getPosition().getZ() * planet.getMass();
 		totalMass += planet.getMass();								//Sum the masses for the denominator
 	}
-	PhysicsVector<3> centreOfMass{ comX / totalMass, comY / totalMass, comZ / totalMass };
+	vector3D_t centreOfMass{ comX / totalMass, comY / totalMass, comZ / totalMass };
 	return centreOfMass;	
 }
 
@@ -83,37 +86,35 @@ double readChars(const std::string_view& inString) {
 
 //This vector reads a string of the form "(e1, e2, e3)" and transforms it into a PhysicsVector object. To save having to pass that object by value, we pass it in and modify it in place.
 //This seems like the best solution as the only application for this function is to modify already existent vector objects.
-void readVector(const std::string_view& inString, PhysicsVector<3>& finalVector) {
-	//I went back and forth on whether to edit the original string_view or make a copy, and ultimately decided to make a copy.
-	//My reasoning is that if the original view is needed elsewhere in the caller for this function, it might not expect this function to change it.
-	std::string_view processedString{ inString };
+void readVector(std::string_view inString, vector3D_t& finalVector) {
+
 
 	//First trim the brackets from the string, if they exist
-	if (inString[0] == '(')processedString.remove_prefix(1);
-	if (inString[inString.length() - 1] == ')')processedString.remove_suffix(1);
+	if (inString[0] == '(')inString.remove_prefix(1);
+	if (inString[inString.length() - 1] == ')')inString.remove_suffix(1);
 
 	//Then we delimit by the comma. If this fails we throw an exception.
 	//First we ensure that there are the expected two commas.
-	auto numberOfCommas{ std::count(processedString.begin(),processedString.end(),',') };
+	auto numberOfCommas{ std::count(inString.begin(),inString.end(),',') };
 	if (numberOfCommas != 2) {
 		std::cerr << "Error in config file. Line: " << inString << " does not contain the correct amount of commas to be read as a 3D vector";
 		throw std::invalid_argument("Error: Expecting two commas to read a 3D vector.");
 	}
 	else {
 		//Otherwise, we delimit at the first comma.
-		auto firstComma{ processedString.find_first_of(',') };
-		std::string_view firstTerm{ processedString.substr(0,firstComma) };
+		auto firstComma{ inString.find_first_of(',') };
+		std::string_view firstTerm{ inString.substr(0,firstComma) };
 		double e1{ readChars(firstTerm) };
 		
 		//With term 1 extracted, we can remove it (and the first comma) from the string and focus on the second term
-		processedString.remove_prefix(firstComma+1);
-		auto secondComma{ processedString.find_first_of(',') };
-		std::string_view secondTerm{ processedString.substr(0,secondComma) };
+		inString.remove_prefix(firstComma+1);
+		auto secondComma{ inString.find_first_of(',') };
+		std::string_view secondTerm{ inString.substr(0,secondComma) };
 		double e2{ readChars(secondTerm) };
 
 		//Finally, we can remove the second term and all we will be left with in the string view is the third term.
-		processedString.remove_prefix(secondComma+1);
-		double e3{ readChars(processedString) };
+		inString.remove_prefix(secondComma+1);
+		double e3{ readChars(inString) };
 
 		//Then we just set the vector passed in.
 		finalVector = { e1,e2,e3 };
@@ -130,6 +131,9 @@ int main()
 
 	planetArray_t Planets{};
 
+	//We avoid using the ConfigReader object from the Basic Utilities library, as it does not support multiple variables with the same name in the config file, and the config file
+	//is more readable divided into easy blocks of name, mass, position, velocity, for each planet rather than having to contrive and hard-code a unique identifier for each planet's properties.
+
 	//The data read into the simulation comes from a file called config.txt
 	std::ifstream configFile("config.txt");
 
@@ -139,8 +143,8 @@ int main()
 	std::bitset<4> initialisedComponents{ "0000" };			//This is used to track whether all four components needed to construct a planet have been initialised.
 	std::string newName;									//The name of each new planet. Stored as a string - storing it as a string_view would change its content if the string it's viewing changes.
 	double newMass;											//Its mass
-	PhysicsVector<3> newPos;								//Position
-	PhysicsVector<3> newVel;								//And velocity.
+	vector3D_t newPos;										//Position
+	vector3D_t newVel;										//And velocity.
 
 	//Then we loop through the file.
 	while (getline(configFile, inputLine)) {
@@ -242,7 +246,7 @@ int main()
 
 		//In reality, the planets don't orbit the exact center of the sun. They orbit the system's joint center of mass.
 		//By far the simplest way to implement this is set the center of mass at the origin of the system, and move everything else in the universe around to accommodate.
-		PhysicsVector<3> CoM{ centreOfMass(Planets) };
+		vector3D_t CoM{ centreOfMass(Planets) };
 		for (auto& planet : Planets) {
 			planet.setPosition(planet.getPosition() - CoM);
 		}

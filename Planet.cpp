@@ -1,13 +1,15 @@
 #include "Planet.h"
 
+using vector3D_t = Physics::PhysicsVector<3>;
+
 //Constructors
-Planet::Planet(const std::string& inName, const double inMass, const PhysicsVector<3>& inPos, const PhysicsVector<3>& inVel) :
+Planet::Planet(const std::string& inName, const double inMass, const vector3D_t& inPos, const vector3D_t& inVel) :
 	m_name{ inName }, m_mass{ inMass }, m_position{ inPos }, m_velocity{ inVel }{}
 
-Planet::Planet(const std::string& inName, const double inMass, const PhysicsVector<3>& inPos, const PhysicsVector<3>& inVel, const PhysicsVector<3>& inAcc) :
+Planet::Planet(const std::string& inName, const double inMass, const vector3D_t& inPos, const vector3D_t& inVel, const vector3D_t& inAcc) :
 	m_name{ inName }, m_mass{ inMass }, m_position{ inPos }, m_velocity{ inVel }, m_acceleration{ inAcc }{}
 
-Planet::Planet(const double inMass, const PhysicsVector<3>& inPos, const PhysicsVector<3>& inVel, const PhysicsVector<3>& inAcc) :
+Planet::Planet(const double inMass, const vector3D_t& inPos, const vector3D_t& inVel, const vector3D_t& inAcc) :
 	m_mass{ inMass }, m_position{ inPos }, m_velocity{ inVel }, m_acceleration{ inAcc }{}
 
 Planet::Planet(const std::string& inName) : m_name{ inName } {}
@@ -17,13 +19,13 @@ Planet::Planet(const std::string& inName) : m_name{ inName } {}
 double Planet::getMass() const {
 	return m_mass;
 }
-const PhysicsVector<3>& Planet::getPosition() const {
+const vector3D_t& Planet::getPosition() const {
 	return m_position;
 }
-const PhysicsVector<3>& Planet::getVelocity() const {
+const vector3D_t& Planet::getVelocity() const {
 	return m_velocity;
 }
-const PhysicsVector<3>& Planet::getAcceleration() const {
+const vector3D_t& Planet::getAcceleration() const {
 	return m_acceleration;
 }
 const std::string& Planet::getName() const {
@@ -33,13 +35,13 @@ const std::string& Planet::getName() const {
 void Planet::setMass(double inMass) {
 	m_mass = inMass;
 }
-void Planet::setPosition(const PhysicsVector<3>& inPos) {
+void Planet::setPosition(const vector3D_t& inPos) {
 	m_position = inPos;
 }
-void Planet::setVelocity(const PhysicsVector<3>& inVel) {
+void Planet::setVelocity(const vector3D_t& inVel) {
 	m_velocity = inVel;
 }
-void Planet::setAcceleration(const PhysicsVector<3>& inAcc) {
+void Planet::setAcceleration(const vector3D_t& inAcc) {
 	m_acceleration = inAcc;
 }
 void Planet::setName(const std::string& inName) {
@@ -50,15 +52,15 @@ void Planet::setName(const std::string& inName) {
 //Planetary functions
 
 //Calculate the acceleration on this planet caused by a single other planet. This is given by -(G M)/r^2 times the r unit vector, where r is the distance between the two objects.
-PhysicsVector<3> Planet::calcAcceleration(const Planet& inPlanet) {
+vector3D_t Planet::calcAcceleration(const Planet& inPlanet) {
 	double r{ (m_position - inPlanet.m_position).magnitude() };
-	PhysicsVector<3> outVector { (m_position - inPlanet.m_position).getUnitVector() };
+	vector3D_t outVector { (m_position - inPlanet.m_position).getUnitVector() };
 	outVector.scaleVector(-(G * inPlanet.m_mass) / pow(r, 2));
 	return outVector;
 }
 //Calculate the total acceleration felt on a planet, as caused by every other planet in the system, then set acceleration accordingly.
 void Planet::updateAccelerationEuler(const planetArray_t& inPlanets) {
-	PhysicsVector<3> sumAcceleration{ 0,0,0 };
+	vector3D_t sumAcceleration{ 0,0,0 };
 	for (const auto& planet : inPlanets) {
 		if (this == &planet) continue;											//Skip over this planet if it appears in the array
 		sumAcceleration += calcAcceleration(planet);

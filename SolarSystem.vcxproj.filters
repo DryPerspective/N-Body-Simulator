@@ -23,9 +23,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PhysicsVector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Planet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
