@@ -17,3 +17,5 @@ The main file for this project is `SolarSystem.cpp`
 
 This project was written using the C++17 language standard, on Visual Studio for Windows 10. It makes use of several objects introduced in C++17 (`std::string_view`, `std::from_chars`, etc) so will not compile on previous language standards.
 
+As of the latest version, the core vector object used in this simulation is found as PhysicsVector in my [Basic Utilities library](https://github.com/DryPerspective/Basic-Utilities), as it is significantly more optimised than the object originally derived for this project.
+
