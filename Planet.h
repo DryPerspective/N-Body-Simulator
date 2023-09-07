@@ -19,7 +19,7 @@
 class Planet
 {
 	//Note the using directive is scoped within the class to prevent it applying to any files which simply #include this header.
-	using vector3D_t = Physics::PhysicsVector<3>;
+	using vector3D_t = dp::PhysicsVector<3>;
 private:
 	static constexpr double G{ 6.67408e-11 };				//The gravitational constant. Unless you're doing weird things with general relativity, this value is universally constant.
 															//G is also very difficult to measure precisely, so 5 decimal places is all we get here.

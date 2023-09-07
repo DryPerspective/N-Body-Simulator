@@ -1,6 +1,6 @@
 #include "Planet.h"
 
-using vector3D_t = Physics::PhysicsVector<3>;
+using vector3D_t = dp::PhysicsVector<3>;
 
 //Constructors
 Planet::Planet(const std::string& inName, const double inMass, const vector3D_t& inPos, const vector3D_t& inVel) :
@@ -69,16 +69,16 @@ void Planet::updateAccelerationEuler(const planetArray_t& inPlanets) {
 }
 //Use the first order Euler approximation to update the position of a planet. Namely Position2 = Position1 + velocity * time step.
 void Planet::updatePositionEuler(const double timeStep) {
-	double newX{ m_position.getX() + (m_velocity.getX() * timeStep) };
-	double newY{ m_position.getY() + (m_velocity.getY() * timeStep) };
-	double newZ{ m_position.getZ() + (m_velocity.getZ() * timeStep) };
+	double newX{ m_position.x() + (m_velocity.x() * timeStep) };
+	double newY{ m_position.y() + (m_velocity.y() * timeStep) };
+	double newZ{ m_position.z() + (m_velocity.z() * timeStep) };
 	m_position = { newX,newY,newZ };
 }
 //Use the first order Euler approximation to update the velocity of a planet. Namely Velocity2 = Velocity1 + acceleration * time step.
 void Planet::updateVelocityEuler(const double timeStep) {
-	double newX{ m_velocity.getX() + (m_acceleration.getX() * timeStep) };
-	double newY{ m_velocity.getY() + (m_acceleration.getY() * timeStep) };
-	double newZ{ m_velocity.getZ() + (m_acceleration.getZ() * timeStep) };
+	double newX{ m_velocity.x() + (m_acceleration.x() * timeStep) };
+	double newY{ m_velocity.y() + (m_acceleration.y() * timeStep) };
+	double newZ{ m_velocity.z() + (m_acceleration.z() * timeStep) };
 	m_velocity = { newX,newY,newZ };
 }
 

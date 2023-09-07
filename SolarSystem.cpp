@@ -17,7 +17,7 @@
 //To prevent confusion between a vector, the mathematical object of a number with direction, and std::vector, we use this alias.
 using planetArray_t = std::vector<Planet>;
 //To save having to dig through the utilities library namespaces we use an alias for our vector
-using vector3D_t = Physics::PhysicsVector<3>;
+using vector3D_t = dp::PhysicsVector<3>;
 
 
 //This function adds the default solar system to the simulation. Planetary data courtesy of NASA JPL.
@@ -46,9 +46,9 @@ vector3D_t centreOfMass(const planetArray_t& Planets) {
 	double comZ{ 0 };
 	double totalMass{ 0 };
 	for (auto planet : Planets) {
-		comX += planet.getPosition().getX() * planet.getMass();		//Sum the individual mass*position terms for the numerator
-		comY += planet.getPosition().getY() * planet.getMass();
-		comZ += planet.getPosition().getZ() * planet.getMass();
+		comX += planet.getPosition().x() * planet.getMass();		//Sum the individual mass*position terms for the numerator
+		comY += planet.getPosition().y() * planet.getMass();
+		comZ += planet.getPosition().z() * planet.getMass();
 		totalMass += planet.getMass();								//Sum the masses for the denominator
 	}
 	vector3D_t centreOfMass{ comX / totalMass, comY / totalMass, comZ / totalMass };
@@ -258,7 +258,7 @@ int main()
 
 		//And write the updated data to the output file.
 		for (const auto& planet : Planets) {
-			outputFile << planet.getPosition().getX() << "," << planet.getPosition().getY() << ',' << planet.getPosition().getZ() << ',';
+			outputFile << planet.getPosition().x() << "," << planet.getPosition().y() << ',' << planet.getPosition().z() << ',';
 		}
 		outputFile <<  '\n';
 		currentLength += timeStep;
